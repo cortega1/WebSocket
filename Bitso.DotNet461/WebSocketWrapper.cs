@@ -23,7 +23,13 @@ namespace Bitso
         private Subscription _subscription = new Subscription();
         private WebSocketReceiveResult _result;
         private ArraySegment<Byte> _buffer3;
-        public CancellationToken Caltoken { get; set; }
+        public CancellationToken _caltoken;
+        public CancellationTokenSource tokenSource;
+
+        Object _obj;
+        public Object Result {
+            get { return _obj; }
+        }
         
         private SocketClass()
         {
@@ -34,13 +40,18 @@ namespace Bitso
 
             /*_ws = new ClientWebSocket();
             _uri = new Uri("wss://ws.bitso.com");*/
-            Caltoken = new CancellationTokenSource().Token;
+            tokenSource = new CancellationTokenSource();
+            _caltoken = tokenSource.Token;
         }
 
 
         public static SocketClass GetInstance()
         {
             return _instance;
+        }
+
+        public void Close() {
+            tokenSource.Cancel();
         }
 
         public async Task<ArraySegment<byte>> Connect()
@@ -96,6 +107,15 @@ namespace Bitso
             }
         }
 
+        public async Task<object> ReadDataAsync() {
+            var t = new Task<object>(() =>
+            {
+                while (_result == null) ;
+                this.Close();
+                return _result;
+            });
+            return await t;
+        }
 
         private async Task Receive(ClientWebSocket socket)
         {
@@ -107,10 +127,11 @@ namespace Bitso
 
                 if (socket.State == WebSocketState.Open)
                 {
-                    while(!Caltoken.IsCancellationRequested || socket.State == WebSocketState.Closed)
+                    while(!_caltoken.IsCancellationRequested || socket.State == WebSocketState.Closed)
                     {
-                        _result = await socket.ReceiveAsync(_buffer3, Caltoken);
+                        _result = await socket.ReceiveAsync(_buffer3, _caltoken);
                     }
+                    //_obj = _result != null ? _result : null;
                     //Console.WriteLine(result.Count);
                 }
             }
