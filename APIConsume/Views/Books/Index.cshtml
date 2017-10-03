@@ -1,0 +1,49 @@
+﻿@model IEnumerable<APIConsume.Models.Book>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Book</th>
+            <th>Minimun price</th>
+            <th>Maximum price</th>
+            <th>Minimum value</th>
+            <th>Maximum value</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.book)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.minimum_price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.maximum_price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.minimum_value)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.maximum_value)
+                </td>
+                <td>
+                    @Html.ActionLink("Check ticker", "Ticker", "Books",new
+                       {
+                            book = item.book
+                       }
+                   )
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

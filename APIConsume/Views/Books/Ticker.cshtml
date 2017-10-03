@@ -1,0 +1,46 @@
+﻿@model APIConsume.Models.Ticker
+
+@{
+    ViewData["Title"] = "Ticker";
+}
+
+<h2>Ticker</h2>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.book):
+    @Html.ValueFor(m => m.book)
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.created_at):
+    @Html.ValueFor(m => m.created_at)
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.high):
+    @Html.ValueFor(m => m.high)
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.last):
+    @Html.ValueFor(m => m.last)
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.volume):
+    @Html.ValueFor(m => m.volume)
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.vwap):
+    @Html.ValueFor(m => m.vwap)
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.low):
+    @Html.ValueFor(m => m.low)
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.ask):
+    @Html.ValueFor(m => m.ask)
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.bid):
+    @Html.ValueFor(m => m.bid)
+</div>
+
+@Html.ActionLink("Back to table", "Index", "Books")
