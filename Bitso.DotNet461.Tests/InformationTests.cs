@@ -54,9 +54,9 @@ namespace Bitso.DotNet461.Tests
             ArraySegment<byte> result = new ArraySegment<byte>(new byte[1024]);
             //await Task.WhenAll(new List<Task>() { socket.Connect(), new Task(() => socket.tokenSource.Cancel()) });
             //result = await socket.Connect();
-            await Task.WhenAll(new List<Task> { socket.Connect(), socket.ReadDataAsync() });
+            await Task.WhenAll(socket.ReadDataAsync(), socket.Connect());
             Assert.IsNotNull(socket.Result);
-            Assert.IsTrue(result.Count() > 0);
+            //Assert.IsTrue(result.Count() > 0);
         }
     }
 }

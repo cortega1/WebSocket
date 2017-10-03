@@ -76,7 +76,7 @@ namespace Bitso
             _subscription.book = "btc_mxn";
             _subscription.type = "trades";
             var ws = new System.Net.WebSockets.ClientWebSocket();
-            //Task.WhenAll(new List<Task> { ConnectAsync(ws), Receive(ws) });
+            //await Task.WhenAll(new List<Task> { ConnectAsync(ws), Receive(ws) });
             await ConnectAsync(ws);
             await Receive(ws);
 
@@ -97,11 +97,11 @@ namespace Bitso
         private async Task ConnectAsync(ClientWebSocket socket)
         {
             string json = JsonConvert.SerializeObject(_subscription);
-            byte[] buffer = Encoding.UTF8.GetBytes(json);
+            byte[] buffer = Encoding.ASCII.GetBytes(json);
             var buffer2 = new ArraySegment<byte>(buffer);
-            await socket.ConnectAsync(new Uri("wss://ws.bitso.com"), CancellationToken.None);
+            await socket.ConnectAsync(new Uri("wss://ws.bitso.com"), _caltoken);
             while (socket.State == WebSocketState.Connecting);
-            if(!socket.SendAsync(buffer2, WebSocketMessageType.Binary, false, CancellationToken.None).Wait(5000))
+            if(!socket.SendAsync(buffer2, WebSocketMessageType.Binary, true, _caltoken).Wait(10000))
             {
                 throw new Exception("Error: Websocket send timeout");
             }
@@ -111,7 +111,7 @@ namespace Bitso
             var t = new Task<object>(() =>
             {
                 while (_result == null) ;
-                this.Close();
+                Close();
                 return _result;
             });
             return await t;
