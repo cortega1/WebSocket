@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Bitso.DotNet461.Tests
 {
@@ -47,12 +48,27 @@ namespace Bitso.DotNet461.Tests
             Assert.IsTrue(booktrades.Count() > 0);
         }
 
-        [Test]
+        /*[Test]
         public async Task SocketClass_NoParams_Success()
         {
             var socket = Bitso.SocketClass.GetInstance();
             await socket.ConnectAsync();
             Assert.IsNotNull(socket.Result);
-        }        
+        }*/
+
+
+        [Test]
+        public async Task SocketClass_NoParams_Success()
+        {
+            var clientsocket = Bitso.SocketClass.GetInstance();
+            await clientsocket.ConnectAsync("btc_mxn", "trades");
+            string json = await clientsocket.Receive();
+            Object response = null;
+            if (json != "")
+            {
+                response = JsonConvert.DeserializeObject<Object>(json);
+            }
+            Assert.IsNotNull(response);
+        }
     }
 }

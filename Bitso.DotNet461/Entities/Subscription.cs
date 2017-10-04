@@ -11,5 +11,12 @@ namespace Bitso.DotNet461.Entities
         public string action { get; set; }
         public string book { get; set; }
         public string type { get; set; }
+
+        public Subscription()
+        {
+            action = "subscribe";
+            book = "";
+            type = "";
+        }
     }
 }
