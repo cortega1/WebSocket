@@ -61,9 +61,13 @@
   <ItemGroup>
     <Compile Include="Entities\Book.cs" />
     <Compile Include="Entities\OrderBook.cs" />
+    <Compile Include="Entities\PayloadDiffOrders.cs" />
+    <Compile Include="Entities\PayloadOrders.cs" />
+    <Compile Include="Entities\SocketResponse.cs" />
     <Compile Include="Entities\Subscription.cs" />
     <Compile Include="Entities\Ticker.cs" />
     <Compile Include="Entities\Trades.cs" />
+    <Compile Include="Entities\PayloadTrades.cs" />
     <Compile Include="Information.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebSocketWrapper.cs" />

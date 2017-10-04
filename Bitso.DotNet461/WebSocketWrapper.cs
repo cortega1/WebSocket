@@ -14,34 +14,24 @@ namespace Bitso
 {
     public class SocketClass
     {
-        /*private IPAddress _destination;
-        private Socket _socket;*/
-        //private string _message = "{ action: 'subscribe', book: 'btc_mxn', type: 'trades' }";
         private static readonly SocketClass _instance = new SocketClass();
-        //private ClientWebSocket _ws;
         private Uri _uri;
-        private Subscription _subscription = new Subscription();
+        private Subscription _subscription;
         private WebSocketReceiveResult _result;
         private ArraySegment<Byte> _buffer3;
+        private UTF8Encoding encoder = new UTF8Encoding();
         public CancellationToken _caltoken;
         public CancellationTokenSource tokenSource;
 
-        Object _obj;
-        public Object Result {
-            get { return _obj; }
-        }
+        //Object _obj;
+        public string Result { get; set; }
         
         private SocketClass()
         {
-            /*_destination = Dns.GetHostAddresses("wss://ws.bitso.com")[0];
-            byte[] buffer = Encoding.ASCII.GetBytes(_message);
-            _socket = new Socket(SocketType.Dgram, ProtocolType.Tcp);
-            _socket.SendTo(buffer, _destination);*/
-
-            /*_ws = new ClientWebSocket();
-            _uri = new Uri("wss://ws.bitso.com");*/
             tokenSource = new CancellationTokenSource();
+            _uri = new Uri("wss://ws.bitso.com");
             _caltoken = tokenSource.Token;
+            _subscription = new Subscription();
         }
 
 
@@ -50,96 +40,74 @@ namespace Bitso
             return _instance;
         }
 
-        public void Close() {
+        public void Close()
+        {
             tokenSource.Cancel();
         }
 
-        public async Task<ArraySegment<byte>> Connect()
+        public async Task ConnectAsync()
         {
-            /*string apiUrl = "wss://ws.bitso.com";
-            var data = new {  action = "subscribe", book = "btc_mxn", type = "trades" };
-            string requestJson = Newtonsoft.Json.JsonConvert.SerializeObject(data);
-            string responseJson = string.Empty;
-
-            using (WebClient client = new WebClient())
-            {
-                client.Headers[HttpRequestHeader.Accept] = "application/json";
-                client.Headers[HttpRequestHeader.ContentType] = "application/json";
-
-                byte[] response = client.UploadData(apiUrl, Encoding.UTF8.GetBytes(requestJson));
-
-                responseJson = Encoding.UTF8.GetString(response);
-                int i = 0;
-            }*/
-
             _subscription.action = "subscribe";
             _subscription.book = "btc_mxn";
             _subscription.type = "trades";
-            var ws = new System.Net.WebSockets.ClientWebSocket();
-            //await Task.WhenAll(new List<Task> { ConnectAsync(ws), Receive(ws) });
-            await ConnectAsync(ws);
-            await Receive(ws);
 
-            return _buffer3;
-            //Console.WriteLine(responseJson);
-
-            /*await _ws.ConnectAsync(_uri, CancellationToken.None);
-            byte[] buffer = Encoding.ASCII.GetBytes(_message);
-            var segment = new ArraySegment<byte>(buffer);
-            var result = await _ws.ReceiveAsync(segment, CancellationToken.None);
-            await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Hola", CancellationToken.None);*/
-            //System.Diagnostics.Debugger.Break();
-            /*int count = result.Count;
-            segment = new ArraySegment<byte>(buffer, count, buffer.Length - count);
-            result = await _ws.ReceiveAsync(segment, CancellationToken.None);*/
-        }
-
-        private async Task ConnectAsync(ClientWebSocket socket)
-        {
-            string json = JsonConvert.SerializeObject(_subscription);
-            byte[] buffer = Encoding.ASCII.GetBytes(json);
-            var buffer2 = new ArraySegment<byte>(buffer);
-            await socket.ConnectAsync(new Uri("wss://ws.bitso.com"), _caltoken);
-            while (socket.State == WebSocketState.Connecting);
-            if(!socket.SendAsync(buffer2, WebSocketMessageType.Binary, true, _caltoken).Wait(10000))
+            try
             {
-                throw new Exception("Error: Websocket send timeout");
+                var ws = new System.Net.WebSockets.ClientWebSocket();
+
+                await ws.ConnectAsync(_uri, _caltoken);
+                await Task.WhenAll(Receive(ws), SubscribeAsync(ws, _subscription));
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e);
             }
         }
 
-        public async Task<object> ReadDataAsync() {
-            var t = new Task<object>(() =>
+        private async Task SubscribeAsync(ClientWebSocket socket, Subscription sub)
+        {
+            try
             {
-                while (_result == null) ;
-                Close();
-                return _result;
-            });
-            return await t;
+                while (socket.State == WebSocketState.Connecting) ;
+                string json = JsonConvert.SerializeObject(_subscription);
+                byte[] buffer = Encoding.ASCII.GetBytes(json);
+                await socket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, _caltoken);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e);
+            }
         }
 
         private async Task Receive(ClientWebSocket socket)
         {
             try
             {
-                //socket.ReceiveAsync()
-                _buffer3 = new ArraySegment<byte>(new Byte[8192]);  //WebSocket.CreateClientBuffer(1024,1024);
+                _buffer3 = new ArraySegment<byte>(new Byte[1024]);
                 while (socket.State == WebSocketState.Connecting);
 
-                if (socket.State == WebSocketState.Open)
+                while (socket.State == WebSocketState.Open)
                 {
-                    while(!_caltoken.IsCancellationRequested || socket.State == WebSocketState.Closed)
-                    {
-                        _result = await socket.ReceiveAsync(_buffer3, _caltoken);
-                    }
-                    //_obj = _result != null ? _result : null;
-                    //Console.WriteLine(result.Count);
+                    _result = await socket.ReceiveAsync(_buffer3, _caltoken);
+                    Result = encoder.GetString(_buffer3.Array);
+                    if (_result.EndOfMessage) break;
                 }
             }
 
             catch (Exception e)
             {
-                throw;
+                System.Diagnostics.Debug.WriteLine(e);
             }
         }
+
+        /*public void ReadData()
+        {
+            var t = new Task(() =>
+            {
+                while (_result == null) ;
+                Close();
+            });
+            t.Start();
+        }*/
     }
 }

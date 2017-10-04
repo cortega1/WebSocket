@@ -42,7 +42,7 @@ namespace Bitso.DotNet461.Tests
         public async Task BookTrades_NoParams_Success()
         {
             var client = Bitso.Information.GetInstance();
-            var booktrades = await client.BookTradesAsync(book:"btc_mxn", sort:"asc", limit:10);
+            var booktrades = await client.BookTradesAsync(book: "btc_mxn", sort: "asc", limit: 10);
             Assert.IsNotNull(booktrades);
             Assert.IsTrue(booktrades.Count() > 0);
         }
@@ -51,12 +51,8 @@ namespace Bitso.DotNet461.Tests
         public async Task SocketClass_NoParams_Success()
         {
             var socket = Bitso.SocketClass.GetInstance();
-            ArraySegment<byte> result = new ArraySegment<byte>(new byte[1024]);
-            //await Task.WhenAll(new List<Task>() { socket.Connect(), new Task(() => socket.tokenSource.Cancel()) });
-            //result = await socket.Connect();
-            await Task.WhenAll(socket.ReadDataAsync(), socket.Connect());
+            await socket.ConnectAsync();
             Assert.IsNotNull(socket.Result);
-            //Assert.IsTrue(result.Count() > 0);
-        }
+        }        
     }
 }

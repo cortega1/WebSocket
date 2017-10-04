@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Bitso.DotNet461.Entities
 {
-    public class Subscription
+    abstract class SocketResponse
     {
-        public string action { get; set; }
-        public string book { get; set; }
         public string type { get; set; }
+        public string book { get; set; }
+        public Object payload { get; set; }
     }
 }
