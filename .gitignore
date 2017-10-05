@@ -286,3 +286,5 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+/Bitso.DotNet461/Bitso.DotNet461.nuspec
+/Bitso.DotNet461/nuget.exe

@@ -15,7 +15,7 @@ namespace Bitso
     public class Information
     {
         private static HttpClient _client = new HttpClient();
-        private string _baseUrl = "https://api.bitso.com/v3/";
+        private string _baseUrl = "https://api-dev.bitso.com/v3/";
         private static readonly Information _instance = new Information();
 
         /// <summary>
