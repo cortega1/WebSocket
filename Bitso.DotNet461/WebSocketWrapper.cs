@@ -89,7 +89,7 @@ namespace Bitso
                 while (_ws.State == WebSocketState.Connecting) ;
                 string json = JsonConvert.SerializeObject(_subscription);
                 byte[] buffer = Encoding.ASCII.GetBytes(json);
-                await _ws.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, _caltoken);
+                await _ws.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Binary, true, _caltoken);
             }
             catch (Exception e)
             {
@@ -144,5 +144,21 @@ namespace Bitso
             });
             t.Start();
         }*/
+
+        public async Task<bool> DisconnectAsync()
+        {
+            _ws.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Quit", CancellationToken.None).Wait();
+            _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Quit", CancellationToken.None).Wait();
+            if (_ws.State == WebSocketState.Closed) return true;
+            else return false;
+        }
+
+        public async Task<bool> IsReceivingMessagesAsync()
+        {
+            _buffer3 = new ArraySegment<byte>(new Byte[1024]);
+            _result = await _ws.ReceiveAsync(_buffer3, _caltoken);
+            if (_result != null) return true;
+            else return false;
+        }
     }
 }

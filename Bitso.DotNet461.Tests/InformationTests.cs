@@ -62,13 +62,17 @@ namespace Bitso.DotNet461.Tests
         {
             var clientsocket = Bitso.SocketClass.GetInstance();
             await clientsocket.ConnectAsync("btc_mxn", "trades");
-            string json = await clientsocket.Receive();
+            string json = "";
+            bool des = false;
+            if (clientsocket.IsReceivingMessagesAsync().Result) json = await clientsocket.Receive();
             Object response = null;
             if (json != "")
             {
                 response = JsonConvert.DeserializeObject<Object>(json);
+                des = await clientsocket.DisconnectAsync();
             }
             Assert.IsNotNull(response);
+            Assert.IsTrue(des);
         }
     }
 }
