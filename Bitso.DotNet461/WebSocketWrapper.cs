@@ -1,10 +1,6 @@
 ﻿using Bitso.DotNet461.Entities;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -145,7 +141,12 @@ namespace Bitso
             t.Start();
         }*/
 
-        public async Task<bool> DisconnectAsync()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        /// 
+        public bool DisconnectAsync()
         {
             _ws.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Quit", CancellationToken.None).Wait();
             _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Quit", CancellationToken.None).Wait();
@@ -153,6 +154,10 @@ namespace Bitso
             else return false;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public async Task<bool> IsReceivingMessagesAsync()
         {
             _buffer3 = new ArraySegment<byte>(new Byte[1024]);

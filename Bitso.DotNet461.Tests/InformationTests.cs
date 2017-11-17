@@ -1,11 +1,8 @@
-﻿using NUnit.Framework;
+﻿using Newtonsoft.Json;
+using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace Bitso.DotNet461.Tests
 {
@@ -69,7 +66,7 @@ namespace Bitso.DotNet461.Tests
             if (json != "")
             {
                 response = JsonConvert.DeserializeObject<Object>(json);
-                des = await clientsocket.DisconnectAsync();
+                des = clientsocket.DisconnectAsync();
             }
             Assert.IsNotNull(response);
             Assert.IsTrue(des);

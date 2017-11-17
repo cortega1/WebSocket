@@ -97,9 +97,21 @@ namespace Bitso
         public async Task<ICollection<Trades>> BookTradesAsync(string book, int marker = 0, int limit = 0, string sort = null)
         {
             string uri = "trades/?book="+book;
-            if (marker > 0) uri += "&marker=" + marker;
-            if (!string.IsNullOrEmpty(sort)) uri += "&sort=asc";
-            if (limit > 0 && limit <= 100) uri += "&limit=" + limit;
+
+            if (marker > 0)
+            {
+                uri += "&marker=" + marker;
+            }
+
+            if (!string.IsNullOrEmpty(sort))
+            {
+                uri += "&sort=asc";
+            }
+
+            if (limit > 0 && limit <= 100)
+            {
+                uri += "&limit=" + limit;
+            }
 
             TradesResponse traderesponse = null;
             HttpResponseMessage response = await JSONcallerAsync(uri);
