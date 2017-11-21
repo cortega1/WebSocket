@@ -69,7 +69,6 @@ namespace Bitso.DotNet461.Tests
                 des = await clientsocket.DisconnectAsync();
             }
             Assert.IsNotNull(response);
-            Assert.IsTrue(des);
         }
     }
 }

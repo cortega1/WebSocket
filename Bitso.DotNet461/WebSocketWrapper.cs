@@ -145,7 +145,7 @@ namespace Bitso
         {
             await IsReceivingMessagesAsync();
             await _ws.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Quit", CancellationToken.None);
-            await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Quit", CancellationToken.None);
+            //await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Quit", CancellationToken.None);
             if (_ws.State == WebSocketState.Closed) return true;
             else return false;
         }
