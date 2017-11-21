@@ -1,34 +1,36 @@
-﻿using System;
+﻿using Bitso.Entities.Api.AvailableBooksApi;
+using Bitso.Entities.Api.OrderBookApi;
+using Bitso.Entities.Api.TickerApi;
+using Bitso.Entities.Api.TradesApi;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using Bitso.Entities;
-using Bitso.DotNet461.Entities;
 
 namespace Bitso
 {
 
     /// <summary>
-    /// Class that access Bitso Information.
+    /// Class that access Bitso Public Apis.
     /// </summary>
-    public class Information
+    public class RestApi
     {
         private static HttpClient _client = new HttpClient();
         private string _baseUrl = "https://api-dev.bitso.com/v3/";
-        private static readonly Information _instance = new Information();
+        private static readonly RestApi _instance = new RestApi();
 
         /// <summary>
         /// Creates an instance of Information class.
         /// </summary>
-        private Information()
+        private RestApi()
         {
             _client.BaseAddress = new Uri(_baseUrl);
             _client.DefaultRequestHeaders.Clear();
             _client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public static Information GetInstance()
+        public static RestApi GetInstance()
         {
             return _instance;
         }

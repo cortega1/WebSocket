@@ -1,4 +1,4 @@
-﻿using Bitso.DotNet461.Entities;
+﻿using Bitso.Entities.WebSocketApi;
 using Newtonsoft.Json;
 using System;
 using System.Net.WebSockets;
@@ -106,12 +106,8 @@ namespace Bitso
                 _buffer3 = new ArraySegment<byte>(new Byte[1024]);
                 while (_ws.State == WebSocketState.Connecting);
                 _result = await _ws.ReceiveAsync(_buffer3, _caltoken);
+                //if (_result.EndOfMessage) return "";
                 return encoder.GetString(_buffer3.Array);
-
-                /*while (socket.State == WebSocketState.Open)
-                {
-                    if (_result.EndOfMessage) break;
-                }*/
             }
 
             catch (Exception e)
@@ -145,11 +141,11 @@ namespace Bitso
         /// 
         /// </summary>
         /// <returns></returns>
-        /// 
-        public bool DisconnectAsync()
+        public async Task<bool> DisconnectAsync()
         {
-            _ws.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Quit", CancellationToken.None).Wait();
-            _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Quit", CancellationToken.None).Wait();
+            await IsReceivingMessagesAsync();
+            await _ws.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Quit", CancellationToken.None);
+            await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Quit", CancellationToken.None);
             if (_ws.State == WebSocketState.Closed) return true;
             else return false;
         }

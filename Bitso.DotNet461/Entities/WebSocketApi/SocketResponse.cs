@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bitso.DotNet461.Entities
+namespace Bitso.Entities.WebSocketApi
 {
-    abstract class SocketResponse
+    public class SocketResponse
     {
         public string type { get; set; }
         public string book { get; set; }
+        public string sequence { get; set; }
         public Object payload { get; set; }
     }
 }

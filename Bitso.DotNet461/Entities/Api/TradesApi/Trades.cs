@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Bitso.DotNet461.Entities
+﻿namespace Bitso.Entities.Api.TradesApi
 {
     public class Trades
     {
@@ -14,11 +8,5 @@ namespace Bitso.DotNet461.Entities
         public string maker_side { get; set; }
         public string price { get; set; }
         public string tid { get; set; }
-    }
-
-    public class TradesResponse
-    {
-        public bool success { get; set; }
-        public ICollection<Trades> payload { get; set; }
     }
 }

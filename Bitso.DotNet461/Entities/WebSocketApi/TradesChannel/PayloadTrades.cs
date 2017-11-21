@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bitso.DotNet461.Entities
+namespace Bitso.Entities.WebSocketApi.TradesChannel
 {
     class PayloadTrades
     {
